@@ -25,12 +25,13 @@ def words_from_dump(wiki):
 
     # pages = list(pages)[:50]  # debug, take only first X pages
 
-    for _, _, title, content, *_ in pages:
+    for page in pages:
+        content = page.content
         if str(content).startswith('#REDIRECT'):
-            logger.debug('%s is a redirect, skipping...', title)
+            logger.debug('%s is a redirect, skipping...', page.title)
             continue
 
-        article_words = tokenize(clean(title + ' ' + content))
+        article_words = tokenize(clean(page.title + ' ' + content))
 
         # make it lower
         article_words = [str(word).lower() for word in article_words]
@@ -42,7 +43,7 @@ def words_from_dump(wiki):
         words_from_article = [word for word in article_words if len(word) > 10 and 'x' not in word]
 
         if 'filmsleikstjóririthøvundurframleiðarisjónleikari' in words_from_article:
-            logger.info('Word found in %s', title)
+            logger.info('Word found in %s', page.title)
             print(content)
 
         long_words += words_from_article
